@@ -13,7 +13,7 @@
     "db:studio": "drizzle-kit studio",
     "db:dev": "drizzle-kit push",
     "db:reset": "drizzle-kit drop && drizzle-kit push",
-    "db:seed": "tsx scripts/seed.ts",
+    "db:seed": "tsx --env-file=.env scripts/seed.ts",
     "sync-template": "node create-agentic-app/scripts/sync-templates.js"
   },
   "dependencies": {
@@ -53,6 +53,7 @@
     "@types/pg": "^8.15.6",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.6",
     "eslint": "^9.39.0",
     "eslint-config-next": "15.4.6",
