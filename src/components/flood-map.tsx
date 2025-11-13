@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { formatDateTimeJakarta } from "@/lib/utils";
 import "leaflet/dist/leaflet.css";
 
 // Dynamic import to avoid SSR issues with Leaflet
@@ -142,10 +143,7 @@ export function FloodMap({ observations }: FloodMapProps) {
                 </p>
                 <p className="text-xs text-gray-500">
                   Last updated:{" "}
-                  {new Date(obs.lastUpdated).toLocaleString("en-ZA", {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  })}
+                  {formatDateTimeJakarta(obs.lastUpdated)}
                 </p>
               </div>
             </Popup>

@@ -16,6 +16,7 @@ import {
 import { ArrowLeft, Save, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { formatDateTimeJakarta } from "@/lib/utils";
 import type { Observation } from "@/components/flood-map";
 
 const WARNING_LEVELS = [
@@ -162,9 +163,7 @@ export default function UpdatePage() {
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Last updated:{" "}
-                    {new Date(selectedObservation.lastUpdated).toLocaleString(
-                      "en-ZA"
-                    )}
+                    {formatDateTimeJakarta(selectedObservation.lastUpdated)}
                   </p>
                 </div>
               )}

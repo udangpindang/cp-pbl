@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, Info, AlertTriangle, XCircle } from "lucide-react";
+import { formatDateJakarta } from "@/lib/utils";
 import type { Observation } from "./flood-map";
 
 interface SummaryStatsProps {
@@ -64,7 +65,7 @@ export function SummaryStats({ observations }: SummaryStatsProps) {
   return (
     <div className="space-y-4">
       <div className="text-sm text-muted-foreground">
-        Last updated: {lastUpdate.toLocaleString("en-ZA", {
+        Last updated: {formatDateJakarta(lastUpdate, {
           dateStyle: "medium",
           timeStyle: "short",
         })}

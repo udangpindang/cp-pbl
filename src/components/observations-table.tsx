@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { formatDateTimeJakarta } from "@/lib/utils";
 import type { Observation } from "./flood-map";
 
 interface ObservationsTableProps {
@@ -155,10 +156,7 @@ export function ObservationsTable({ observations }: ObservationsTableProps) {
                   </TableCell>
                   <TableCell>{obs.waterLevel.toFixed(1)}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {new Date(obs.lastUpdated).toLocaleString("en-ZA", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
+                    {formatDateTimeJakarta(obs.lastUpdated)}
                   </TableCell>
                 </TableRow>
               ))
