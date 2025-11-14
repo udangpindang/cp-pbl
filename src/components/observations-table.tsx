@@ -28,7 +28,8 @@ export function ObservationsTable({ observations }: ObservationsTableProps) {
     const result = observations.filter(
       (obs) =>
         obs.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        obs.warningLevel.toLowerCase().includes(searchTerm.toLowerCase())
+        obs.warningLevel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        obs.weather.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (sortColumn) {
@@ -86,7 +87,7 @@ export function ObservationsTable({ observations }: ObservationsTableProps) {
         <div className="relative flex-1">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name or warning level..."
+            placeholder="Search by name, warning level, or weather..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-8"
@@ -105,7 +106,14 @@ export function ObservationsTable({ observations }: ObservationsTableProps) {
                 Observation Name{" "}
                 {sortColumn === "name" && (sortDirection === "asc" ? "↑" : "↓")}
               </TableHead>
-              <TableHead>Location</TableHead>
+              <TableHead
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => handleSort("weather")}
+              >
+                Observed Weather{" "}
+                {sortColumn === "weather" &&
+                  (sortDirection === "asc" ? "↑" : "↓")}
+              </TableHead>
               <TableHead
                 className="cursor-pointer hover:bg-muted/50"
                 onClick={() => handleSort("warningLevel")}
@@ -143,8 +151,8 @@ export function ObservationsTable({ observations }: ObservationsTableProps) {
               filteredAndSorted.map((obs) => (
                 <TableRow key={obs.id}>
                   <TableCell className="font-medium">{obs.name}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {obs.latitude.toFixed(4)}, {obs.longitude.toFixed(4)}
+                  <TableCell className="text-sm capitalize">
+                    {obs.weather}
                   </TableCell>
                   <TableCell>
                     <Badge
