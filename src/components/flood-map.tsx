@@ -23,10 +23,11 @@ const Popup = dynamic(
   { ssr: false }
 );
 
-import L from "leaflet";
-
 // Define custom marker icons for each warning level
-const getMarkerIcon = (warningLevel: string) => {
+// Using dynamic import to avoid SSR issues
+const getMarkerIcon = async (warningLevel: string) => {
+  const L = (await import("leaflet")).default;
+
   let color = "#22c55e"; // Normal - Light Green
 
   switch (warningLevel) {
@@ -75,14 +76,32 @@ interface FloodMapProps {
   observations: Observation[];
 }
 
+// Type for Leaflet DivIcon
+type LeafletDivIcon = Awaited<ReturnType<typeof getMarkerIcon>>;
+
 export function FloodMap({ observations }: FloodMapProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const [markerIcons, setMarkerIcons] = useState<Record<string, LeafletDivIcon>>({});
 
   useEffect(() => {
     setIsMounted(true);
+
+    // Pre-load all marker icons
+    const loadIcons = async () => {
+      const warningLevels = ["Normal", "Advisory", "Watch", "Warning"];
+      const icons: Record<string, LeafletDivIcon> = {};
+
+      for (const level of warningLevels) {
+        icons[level] = await getMarkerIcon(level);
+      }
+
+      setMarkerIcons(icons);
+    };
+
+    loadIcons();
   }, []);
 
-  if (!isMounted || observations.length === 0) {
+  if (!isMounted || observations.length === 0 || Object.keys(markerIcons).length === 0) {
     return (
       <div className="w-full h-[500px] bg-muted rounded-lg flex items-center justify-center">
         <p className="text-muted-foreground">Loading map...</p>
@@ -113,7 +132,7 @@ export function FloodMap({ observations }: FloodMapProps) {
           <Marker
             key={obs.id}
             position={[obs.latitude, obs.longitude]}
-            icon={getMarkerIcon(obs.warningLevel)}
+            icon={markerIcons[obs.warningLevel] || markerIcons["Normal"]}
           >
             <Popup>
               <div className="font-sans">

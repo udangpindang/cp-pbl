@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { UserProfile } from "@/components/auth/user-profile";
 import { ModeToggle } from "./ui/mode-toggle";
 import { Bot } from "lucide-react";
 
@@ -21,7 +20,6 @@ export function SiteHeader() {
           </Link>
         </h1>
         <div className="flex items-center gap-4">
-          <UserProfile />
           <ModeToggle />
         </div>
       </div>
