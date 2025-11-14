@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const handleExportPDF = async () => {
     try {
       setExporting(true);
-      await exportToPDF("dashboard-content", "flood-warning-dashboard");
+      await exportToPDF(observations, "flood-warning-dashboard");
     } catch (error) {
       console.error("Failed to export PDF:", error);
     } finally {
