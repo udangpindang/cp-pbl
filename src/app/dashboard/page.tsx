@@ -5,13 +5,15 @@ import { FloodMap, type Observation } from "@/components/flood-map";
 import { SummaryStats } from "@/components/summary-stats";
 import { ObservationsTable } from "@/components/observations-table";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, MapPin } from "lucide-react";
+import { RefreshCw, MapPin, FileDown } from "lucide-react";
 import Link from "next/link";
+import { exportToPDF } from "@/lib/utils";
 
 export default function DashboardPage() {
   const [observations, setObservations] = useState<Observation[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const fetchObservations = async () => {
     try {
@@ -26,6 +28,17 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+    }
+  };
+
+  const handleExportPDF = async () => {
+    try {
+      setExporting(true);
+      await exportToPDF("dashboard-content", "flood-warning-dashboard");
+    } catch (error) {
+      console.error("Failed to export PDF:", error);
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -49,7 +62,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4 md:p-6 space-y-6">
+      <div id="dashboard-content" className="container mx-auto p-4 md:p-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -74,6 +87,17 @@ export default function DashboardPage() {
                 className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
               />
               Refresh
+            </Button>
+            <Button
+              onClick={handleExportPDF}
+              disabled={exporting}
+              variant="outline"
+              size="sm"
+            >
+              <FileDown
+                className={`h-4 w-4 mr-2 ${exporting ? "animate-pulse" : ""}`}
+              />
+              Export as PDF
             </Button>
             <Button asChild size="sm">
               <Link href="/update">Update Status</Link>
