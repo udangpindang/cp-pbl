@@ -67,5 +67,6 @@ export const observations = pgTable("observations", {
   longitude: real("longitude").notNull(),
   warningLevel: varchar("warning_level", { length: 20 }).notNull(),
   waterLevel: real("water_level").notNull(),
+  weather: varchar("weather", { length: 20 }).notNull().default("clear sky"),
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
 });

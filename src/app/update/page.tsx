@@ -26,6 +26,13 @@ const WARNING_LEVELS = [
   { value: "Warning", label: "Warning", color: "bg-red-500" },
 ];
 
+const WEATHER_OPTIONS = [
+  { value: "clear sky", label: "Clear Sky" },
+  { value: "cloudy", label: "Cloudy" },
+  { value: "rainy", label: "Rainy" },
+  { value: "heavy rain", label: "Heavy Rain" },
+];
+
 export default function UpdatePage() {
   const router = useRouter();
   const [observations, setObservations] = useState<Observation[]>([]);
@@ -35,6 +42,7 @@ export default function UpdatePage() {
   const [selectedId, setSelectedId] = useState<string>("");
   const [warningLevel, setWarningLevel] = useState<string>("");
   const [waterLevel, setWaterLevel] = useState<string>("");
+  const [weather, setWeather] = useState<string>("");
 
   useEffect(() => {
     const fetchObservations = async () => {
@@ -58,7 +66,7 @@ export default function UpdatePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedId || !warningLevel || !waterLevel) {
+    if (!selectedId || !warningLevel || !waterLevel || !weather) {
       toast.error("Please fill in all fields");
       return;
     }
@@ -80,6 +88,7 @@ export default function UpdatePage() {
         body: JSON.stringify({
           warningLevel,
           waterLevel: waterLevelNum,
+          weather,
         }),
       });
 
@@ -161,6 +170,13 @@ export default function UpdatePage() {
                   <p className="text-sm">
                     <strong>Water Level:</strong> {selectedObservation.waterLevel}m
                   </p>
+                  <p className="text-sm">
+                    <strong>Weather:</strong>{" "}
+                    {selectedObservation.weather
+                      ? selectedObservation.weather.charAt(0).toUpperCase() +
+                        selectedObservation.weather.slice(1)
+                      : "N/A"}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     Last updated:{" "}
                     {formatDateTimeJakarta(selectedObservation.lastUpdated)}
@@ -190,6 +206,23 @@ export default function UpdatePage() {
                 </Select>
               </div>
 
+              {/* Weather Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="weather">Weather Condition</Label>
+                <Select value={weather} onValueChange={setWeather}>
+                  <SelectTrigger id="weather">
+                    <SelectValue placeholder="Select weather condition" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {WEATHER_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {/* Water Level Input */}
               <div className="space-y-2">
                 <Label htmlFor="water-level">New Water Level (meters)</Label>
@@ -211,7 +244,7 @@ export default function UpdatePage() {
               <div className="flex gap-3 pt-4">
                 <Button
                   type="submit"
-                  disabled={submitting || !selectedId || !warningLevel || !waterLevel}
+                  disabled={submitting || !selectedId || !warningLevel || !waterLevel || !weather}
                   className="flex-1"
                 >
                   <Save className="h-4 w-4 mr-2" />

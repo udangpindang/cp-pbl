@@ -10,11 +10,11 @@ export async function PATCH(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { warningLevel, waterLevel } = body;
+    const { warningLevel, waterLevel, weather } = body;
 
-    if (!warningLevel || waterLevel === undefined) {
+    if (!warningLevel || waterLevel === undefined || !weather) {
       return NextResponse.json(
-        { error: "Missing required fields: warningLevel and waterLevel" },
+        { error: "Missing required fields: warningLevel, waterLevel, and weather" },
         { status: 400 }
       );
     }
@@ -24,6 +24,7 @@ export async function PATCH(
       .set({
         warningLevel,
         waterLevel,
+        weather,
         lastUpdated: new Date(),
       })
       .where(eq(observations.id, parseInt(id)))

@@ -1,0 +1,1 @@
+ALTER TABLE "observations" ADD COLUMN "weather" varchar(20) DEFAULT 'clear sky' NOT NULL;

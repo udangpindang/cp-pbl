@@ -69,6 +69,7 @@ export interface Observation {
   longitude: number;
   warningLevel: string;
   waterLevel: number;
+  weather: string;
   lastUpdated: string | Date;
 }
 
