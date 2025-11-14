@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { useMap } from "react-leaflet";
 import { formatDateTimeJakarta } from "@/lib/utils";
 import "leaflet/dist/leaflet.css";
 
@@ -80,6 +81,29 @@ interface FloodMapProps {
 // Type for Leaflet DivIcon
 type LeafletDivIcon = Awaited<ReturnType<typeof getMarkerIcon>>;
 
+// Component to fit map bounds to all observation points
+function FitBounds({ observations }: { observations: Observation[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (observations.length > 0 && map) {
+      // Create bounds from all observation points
+      const bounds: [number, number][] = observations.map((obs) => [
+        obs.latitude,
+        obs.longitude,
+      ]);
+
+      // Fit the map to these bounds with some padding
+      map.fitBounds(bounds, {
+        padding: [50, 50], // Add padding around the edges
+        maxZoom: 15, // Don't zoom in too close if there's only one point
+      });
+    }
+  }, [observations, map]);
+
+  return null;
+}
+
 export function FloodMap({ observations }: FloodMapProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [markerIcons, setMarkerIcons] = useState<Record<string, LeafletDivIcon>>({});
@@ -110,7 +134,7 @@ export function FloodMap({ observations }: FloodMapProps) {
     );
   }
 
-  // Calculate center based on observations
+  // Calculate center based on observations (used as initial center before fitBounds)
   const centerLat =
     observations.reduce((sum, obs) => sum + obs.latitude, 0) /
     observations.length;
@@ -129,6 +153,7 @@ export function FloodMap({ observations }: FloodMapProps) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <FitBounds observations={observations} />
         {observations.map((obs) => (
           <Marker
             key={obs.id}
